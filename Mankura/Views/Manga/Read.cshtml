@@ -1,0 +1,46 @@
+﻿@model Mankura.Models.ViewModels.ChapterReadViewModel
+
+@{
+    ViewData["Title"] = "Reading";
+}
+
+<div class="reading-page-main">
+
+    <div class="manga-reader-container">
+        @foreach (var page in Model.Pages.OrderBy(p => p.PageNumber))
+        {
+            <div class="manga-page">
+                <img src="@page.ImageURL"
+                     alt="Page @page.PageNumber"
+                     loading="lazy" />
+            </div>
+        }
+    </div>
+
+    <div class="reading-navigation">
+
+        @if (Model.PrevChapterId != null)
+        {
+            <a asp-controller="Manga"
+               asp-action="Read"
+               asp-route-chapterId="@Model.PrevChapterId"
+               class="nav-button prev">
+                <img src="/icons/previous.svg" alt="Previous">
+                <span>Previous chapter</span>
+            </a>
+        }
+
+        @if (Model.NextChapterId != null)
+        {
+            <a asp-controller="Manga"
+               asp-action="Read"
+               asp-route-chapterId="@Model.NextChapterId"
+               class="nav-button next">
+                <span>Next chapter</span>
+                <img src="/icons/next.svg" alt="Next">
+            </a>
+        }
+
+    </div>
+
+</div>

@@ -1,0 +1,60 @@
+﻿@model Mankura.Models.ViewModels.HomeViewModel
+
+<div class="home-layout">
+
+    <section class="home-section">
+        <h2 class="section-title">New Items</h2>
+
+        <div class="manga-row">
+            @foreach (var manga in Model.NewItems)
+            {
+                <a asp-controller="Manga"
+                   asp-action="Details"
+                   asp-route-id="@manga.Id"
+                   class="manga-card">
+
+                    <div class="manga-cover">
+                        @if (!string.IsNullOrEmpty(manga.Cover))
+                        {
+                            <img src="@manga.Cover" alt="@manga.Name" />
+                        }
+                    </div>
+
+                    <div class="manga-title">@manga.Name</div>
+                    <div class="manga-subtitle">@manga.ReleaseYear</div>
+                </a>
+            }
+        </div>
+    </section>
+
+    @foreach (var genreBlock in Model.MangasByGenre)
+    {
+        <section class="home-section">
+            <div class="section-header">
+                <h2 class="section-title">@genreBlock.Key</h2>
+            </div>
+
+            <div class="manga-row">
+                @foreach (var manga in genreBlock.Value)
+                {
+                    <a asp-controller="Manga"
+                       asp-action="Details"
+                       asp-route-id="@manga.Id"
+                       class="manga-card">
+
+                        <div class="manga-cover">
+                            @if (!string.IsNullOrEmpty(manga.Cover))
+                            {
+                                <img src="@manga.Cover" alt="@manga.Name" />
+                            }
+                        </div>
+
+                        <div class="manga-title">@manga.Name</div>
+                        <div class="manga-subtitle">@manga.ReleaseYear</div>
+                    </a>
+                }
+            </div>
+        </section>
+    }
+
+</div>

@@ -1,0 +1,147 @@
+﻿@model Mankura.Models.ViewModels.CatalogViewModel
+
+<div class="catalog-layout">
+
+    <div class="catalog-main">
+
+        <div class="catalog-header">
+            <h1 class="catalog-title">Catalog</h1>
+
+            <div class="sort-wrapper">
+                <select class="sort-dropdown">
+                    <option>Rating</option>
+                    <option>Date</option>
+                    <option>Name (A-Z)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="catalog-grid">
+            @foreach (var manga in Model.Mangas)
+            {
+                <a asp-controller="Manga"
+                   asp-action="Details"
+                   asp-route-id="@manga.Id"
+                   class="manga-card">
+
+                    <div class="manga-cover">
+                        @if (!string.IsNullOrEmpty(manga.Cover))
+                        {
+                            <img src="@manga.Cover" alt="@manga.Name">
+                        }
+                    </div>
+
+                    <div class="manga-title">@manga.Name</div>
+
+                    <div class="manga-subtitle">
+                        @manga.Type, @(manga.ReleaseYear?.ToString() ?? "—")
+                    </div>
+                </a>
+            }
+        </div>
+
+    </div>
+
+    <aside class="filter-sidebar">
+
+        <h2 class="filter-title">Filter</h2>
+
+        <form method="get" asp-action="Index" asp-controller="Catalog">
+
+            <div class="search-bar catalog-search">
+                <input type="text"
+                       name="search"
+                       value="@Model.Search"
+                       placeholder="Search titles..." />
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-title">
+                    Genres
+                    <span><img src="/icons/arrow.svg"></span>
+                </div>
+
+                <div class="filter-content">
+                    @foreach (var g in Model.Genres)
+                    {
+                        <label>
+                            <input type="checkbox"
+                                   name="genreIds"
+                                   value="@g.Id"
+                                   @(Model.GenreIds?.Contains(g.Id) == true ? "checked" : "") />
+                            @g.Name
+                        </label>
+                    }
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-title">
+                    Type
+                    <span><img src="/icons/arrow.svg"></span>
+                </div>
+
+                <div class="filter-content">
+                    @foreach (var t in Model.Types)
+                    {
+                        <label>
+                            <input type="checkbox"
+                                   name="typeIds"
+                                   value="@t.Id"
+                                   @(Model.TypeIds?.Contains(t.Id) == true ? "checked" : "") />
+                            @t.Name
+                        </label>
+                    }
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-title">
+                    Status
+                    <span><img src="/icons/arrow.svg"></span>
+                </div>
+
+                <div class="filter-content">
+                    @foreach (var s in Model.Statuses)
+                    {
+                        <label>
+                            <input type="checkbox"
+                                   name="statusIds"
+                                   value="@s.Id"
+                                   @(Model.StatusIds?.Contains(s.Id) == true ? "checked" : "") />
+                            @s.Name
+                        </label>
+                    }
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-title">
+                    Release year
+                    <span><img src="/icons/arrow.svg"></span>
+                </div>
+
+                <div class="filter-content">
+                    <select name="releaseYear">
+                        <option value="">Any</option>
+                        @foreach (var y in Model.ReleaseYears)
+                        {
+                            <option value="@y" selected="@(y == Model.ReleaseYear)">
+                                @y
+                            </option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-buttons">
+                <a asp-action="Index" class="reset-btn">Reset</a>
+                <button type="submit" class="apply">Apply</button>
+            </div>
+
+        </form>
+
+    </aside>
+
+</div>
+

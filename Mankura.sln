@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36623.8
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mankura", "Mankura\Mankura.csproj", "{AB6CA40E-FC51-4608-965B-3B21911E3124}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB6CA40E-FC51-4608-965B-3B21911E3124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB6CA40E-FC51-4608-965B-3B21911E3124}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB6CA40E-FC51-4608-965B-3B21911E3124}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB6CA40E-FC51-4608-965B-3B21911E3124}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E6D9A440-A4B7-44E3-97EC-D419C7CF2992}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mankura</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="/">
+                    <img src="/img/Mankura.svg" alt="Mankura Logo">
+                </a>
+            </div>
+
+            <nav>
+                <a href="/">Home</a>
+                <a href="/Catalog">Catalog</a>
+            </nav>
+
+            <div class="header-right">
+                <form method="get"
+                      asp-controller="Manga"
+                      asp-action="Search"
+                      class="search-bar">
+
+                    <input type="text"
+                           name="q"
+                           placeholder="Search..." />
+                </form>
+
+                <div id="auth-zone">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="auth-actions">
+
+                            <a href="/User/Profile" class="user-avatar">
+                                <img src="@(
+                                     User.FindFirst("Avatar")?.Value ?? "/img/Avatar.svg"
+                            )" alt="Avatar">
+                            </a>
+
+                            <button type="button"
+                                    class="logout-btn"
+                                    id="logoutBtn"
+                                    aria-label="Logout">
+                                <img src="/icons/leave.svg" alt="Logout">
+                                <span class="logout-tooltip">Logout</span>
+                            </button>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <a href="/Account/Login" class="icon-btn">
+                            <img src="/icons/login_arrow.svg" alt="Log In">
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <script src="/js/script.js"></script>
+
+    @RenderSection("Scripts", required: false)
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-content">
+            <h3 style="margin-bottom: 12px;">Log Out</h3>
+            <p>Are you sure you want to log out?</p>
+
+            <div class="logout-modal-actions">
+                <form method="get" action="/Account/Logout" class="logout-form">
+                    <button type="submit" class="apply">
+                        Log Out
+                    </button>
+                </form>
+
+                <button type="button" class="reset-btn" id="cancelLogout">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

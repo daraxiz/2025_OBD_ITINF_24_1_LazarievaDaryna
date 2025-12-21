@@ -1,0 +1,38 @@
+﻿@model List<(int Id, string Username, string Email, string Role)>
+
+<h2>Admin Panel</h2>
+
+<div style="margin:12px 0;">
+    <b>Users:</b> @ViewBag.UsersCount |
+    <b>Manga:</b> @ViewBag.MangaCount |
+    <b>Comments:</b> @ViewBag.CommentsCount
+</div>
+
+<table border="1" cellpadding="6">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Id</td>
+                <td>@u.Username</td>
+                <td>@u.Email</td>
+                <td>@u.Role</td>
+                <td>
+                    <form method="post" action="/Admin/DeleteUser" style="display:inline;">
+                        <input type="hidden" name="id" value="@u.Id" />
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

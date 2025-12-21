@@ -1,0 +1,104 @@
+﻿@model Mankura.Models.Manga
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="manga-details">
+
+    <div class="manga-sidebar">
+
+        <div class="manga-cover manga-cover--large">
+            @if (!string.IsNullOrEmpty(Model.Cover))
+            {
+                <img src="@Model.Cover" alt="@Model.Name">
+            }
+        </div>
+
+        <button class="action-button read"
+                onclick="location.href='@Url.Action("Read", "Manga", new { id = Model.Id })'">
+            Read
+        </button>
+
+        <button class="action-button bookmark">
+            Add to bookmarks
+        </button>
+
+        <div class="manga-info-group">
+            <div class="info-label">Release</div>
+            <div class="info-value">
+                @Model.ReleaseYear
+            </div>
+        </div>
+
+        <div class="manga-info-group">
+            <div class="info-label">Status</div>
+            <div class="info-value">
+                @Model.Status
+            </div>
+        </div>
+
+        <div class="manga-info-group">
+            <div class="info-label">Type</div>
+            <div class="info-value">
+                @Model.Type
+            </div>
+        </div>
+
+        <div class="manga-info-group">
+            <div class="info-label">Publisher</div>
+            <div class="info-value">
+                @Model.Publisher
+            </div>
+        </div>
+
+    </div>
+
+    <div class="manga-main">
+
+        <div class="manga-header">
+            <h1 class="manga-header-title">@Model.Name</h1>
+
+            @if (Model.Genres != null && Model.Genres.Any())
+            {
+                <div class="manga-tags">
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <span class="tag">@genre</span>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="manga-tabs">
+            <div class="tab active">Description</div>
+            <div class="tab">Chapters</div>
+        </div>
+
+        <div class="manga-description">
+            @Model.Description
+        </div>
+
+        <div class="comments-section">
+            <h2>Comments</h2>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="comment-input-wrapper">
+                    <input type="text" placeholder="Your opinion...">
+                    <div class="comment-send-button">
+                        <img src="/icons/sendbutton.svg" alt="Send">
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p class="comment-login-hint">
+                    Please <a href="/Account/Login">log in</a> to leave a comment.
+                </p>
+            }
+
+        </div>
+
+    </div>
+</div>

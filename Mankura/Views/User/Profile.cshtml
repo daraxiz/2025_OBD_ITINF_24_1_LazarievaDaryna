@@ -1,0 +1,116 @@
+﻿@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="profile-header">
+    <div class="profile-info">
+        <div class="profile-avatar">
+            <img src="@Model.AvatarUrl" alt="Profile Picture" />
+        </div>
+
+        <div class="profile-details">
+            <h1>@Model.UserName</h1>
+            <p>Email: @Model.Email</p>
+            <p>User type: User</p>
+        </div>
+    </div>
+
+    <button type="button"
+            class="settings-btn"
+            id="openSettings">
+        Settings
+    </button>
+    
+    <div class="profile-settings-panel" id="profileSettings">
+        <div class="settings-modal" id="settingsModal">
+            <div class="settings-content">
+                <h3>Profile settings</h3>
+
+                <form method="post"
+                      asp-action="UpdateProfile"
+                      asp-controller="User"
+                      enctype="multipart/form-data">
+
+                    <div class="settings-field">
+                        <label>Username</label>
+                        <input type="text"
+                               name="UserName"
+                               value="@Model.UserName"
+                               required />
+                    </div>
+
+                    <div class="settings-field">
+                        <label>Avatar</label>
+                        <input type="file" name="Avatar" accept="image/*" />
+                    </div>
+
+                    <div class="settings-actions">
+                        <button type="submit" class="apply">Save</button>
+                        <button type="button"
+                                class="reset-btn"
+                                id="closeSettings">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="profile-content">
+
+    <div class="bookmarks-sidebar">
+        <h3 class="bookmarks-title">Bookmarks lists</h3>
+
+        <div class="bookmark-item"><span>Read</span></div>
+        <div class="bookmark-item"><span>Readable</span></div>
+        <div class="bookmark-item"><span>Will be read</span></div>
+        <div class="bookmark-item"><span>Favorites</span></div>
+    </div>
+
+    <div class="profile-manga-content">
+
+        <div class="search-bar profile-search">
+            <input type="text" placeholder="Search..." />
+        </div>
+
+        @if (!Model.ReadingList.Any())
+        {
+            <div class="empty-state">
+                <p class="empty-text">
+                    You don't have any bookmarks at the moment.
+                </p>
+
+                <a asp-controller="Catalog"
+                   asp-action="Index"
+                   class="auth-submit-btn open-catalog-btn">
+                    Open Catalog
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="manga-grid profile-manga-grid">
+                @foreach (var manga in Model.ReadingList)
+                {
+                    <a asp-controller="Manga"
+                       asp-action="Details"
+                       asp-route-id="@manga.Id"
+                       class="manga-card">
+
+                        <div class="manga-cover">
+                            <img src="@manga.Cover" alt="@manga.Name" />
+                        </div>
+
+                        <div class="manga-title">@manga.Name</div>
+                        <div class="manga-subtitle">@manga.ReleaseYear</div>
+                    </a>
+                }
+            </div>
+        }
+
+    </div>
+</div>

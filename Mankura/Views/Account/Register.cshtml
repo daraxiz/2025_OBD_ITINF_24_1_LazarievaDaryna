@@ -1,0 +1,53 @@
+﻿
+<div class="auth-page">
+    <div class="auth-card">
+
+        <h2 class="auth-title">Sign Up</h2>
+
+        @model Mankura.Models.ViewModels.RegisterViewModel
+
+        <span asp-validation-for="Email" class="field-error"></span>
+
+        <form method="post" class="auth-form">
+
+            <div class="auth-field">
+                <input type="text"
+                       name="username"
+                       placeholder="Username"
+                       required />
+            </div>
+
+            <div class="auth-field">
+                <input type="email"
+                       name="email"
+                       placeholder="Email"
+                       required />
+            </div>
+
+            <div class="auth-field">
+                <input type="password"
+                       name="password"
+                       placeholder="Password"
+                       required />
+            </div>
+
+            <button type="submit" class="auth-submit-btn">
+                Create account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account?
+            <a href="/Account/Login">Log in</a>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <p class="auth-error">@ViewBag.Error</p>
+        }
+
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

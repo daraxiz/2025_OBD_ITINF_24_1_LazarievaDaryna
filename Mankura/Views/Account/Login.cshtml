@@ -1,0 +1,39 @@
+﻿@model Mankura.Models.ViewModels.LoginViewModel
+<div class="auth-page">
+
+    <div class="auth-card">
+
+        <h2 class="auth-title">Log In</h2>
+
+        <div asp-validation-summary="ModelOnly" class="auth-error"></div>
+
+        <form method="post" class="auth-form">
+
+            <div class="auth-field">
+                <input asp-for="Login" placeholder="Email or username" />
+            </div>
+
+            <div class="auth-field">
+                <input asp-for="Password"
+                       type="password"
+                       placeholder="Password" />
+                <span asp-validation-for="Password"></span>
+            </div>
+
+            <button type="submit" class="auth-submit-btn">
+                Log In
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Don’t have an account?
+            <a href="/Account/Register">Sign up</a>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <p class="auth-error">@ViewBag.Error</p>
+        }
+
+    </div>
+</div>
