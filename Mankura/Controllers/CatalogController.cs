@@ -14,16 +14,18 @@ namespace Mankura.Controllers
         }
 
         public IActionResult Index(
-            string? search,
-            int[]? genreIds,
-            int[]? typeIds,
-            int[]? statusIds,
-            int? releaseYear)
+        string? search,
+        int[]? genreIds,
+        int[]? typeIds,
+        int[]? statusIds,
+        int? releaseYear,
+        int[]? authorIds,
+        int[]? artistIds)
         {
             var vm = new CatalogViewModel
             {
                 Search = search,
-                Mangas = _repo.GetFiltered(search, genreIds, typeIds, statusIds, releaseYear),
+                Mangas = _repo.GetFiltered(search, genreIds, typeIds, statusIds, releaseYear, authorIds, artistIds),
 
                 Genres = _repo.GetGenres(),
                 Types = _repo.GetTypes(),
@@ -33,7 +35,10 @@ namespace Mankura.Controllers
                 GenreIds = genreIds,
                 TypeIds = typeIds,
                 StatusIds = statusIds,
-                ReleaseYear = releaseYear
+                ReleaseYear = releaseYear,
+
+                Authors = _repo.GetAuthors(),
+                Artists = _repo.GetArtists(),
             };
 
             return View(vm);

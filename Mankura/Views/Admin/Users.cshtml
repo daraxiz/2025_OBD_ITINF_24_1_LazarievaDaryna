@@ -1,0 +1,109 @@
+﻿@using System.Security.Claims
+@using Mankura.Models.ViewModels
+@model List<AdminUserViewModel>
+
+@{
+    ViewData["Title"] = "Manage users";
+
+    var currentUserId = int.Parse(
+        User.FindFirstValue(ClaimTypes.NameIdentifier)!
+    );
+}
+
+<div class="profile-manga-content">
+    <h2 class="section-title">Users</h2>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th style="width: 220px;">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.Id</td>
+                    <td>@u.UserName</td>
+                    <td>@u.Email</td>
+                    <td>
+                        @if (u.RoleId == 1)
+                        {
+                            <span class="admin-badge">Admin</span>
+                        }
+                        else
+                        {
+                            <span>User</span>
+                        }
+                    </td>
+
+                    <td class="admin-actions-cell">
+                        @if (u.Id == currentUserId)
+                        {
+                            <span class="admin-self">Your profile</span>
+                        }
+                        else
+                        {
+                            <form method="post"
+                                  asp-action="ToggleAdmin"
+                                  asp-controller="Admin"
+                                  class="inline-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@u.Id" />
+
+                                <button type="submit" class="admin-role-btn">
+                                    @(u.RoleId == 1 ? "Remove admin" : "Make admin")
+                                </button>
+                            </form>
+
+                            @if (u.RoleId != 1)
+                            {
+                                <button type="button"
+                                        class="admin-delete-btn"
+                                        data-user-id="@u.Id">
+                                    Delete
+                                </button>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="deleteUserModal" class="modal-overlay">
+    <div class="modal">
+        <h3>Delete user?</h3>
+        <p>This action cannot be undone.</p>
+
+        <form method="post"
+              asp-action="DeleteUser"
+              asp-controller="Admin">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="deleteUserId" />
+
+            <div class="modal-actions">
+                <button type="button"
+                        class="btn-cancel"
+                        id="cancelDeleteUser">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        class="btn-delete">
+                    Delete
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/users.js"></script>
+}

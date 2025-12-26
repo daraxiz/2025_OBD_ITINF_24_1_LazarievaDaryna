@@ -1,0 +1,59 @@
+﻿@model AddChapterViewModel
+
+<div class="profile-manga-content">
+    <h2 class="section-title">Add chapter</h2>
+
+    <form method="post"
+          asp-action="AddChapter"
+          enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="form-error">
+                @Html.ValidationSummary(false)
+            </div>
+        }
+
+
+        <div class="settings-field">
+            <label>Manga</label>
+            <select asp-for="MangaId"
+                    asp-items="Model.Mangas"
+                    required>
+                <option value="">Select manga</option>
+            </select>
+        </div>
+
+        <div class="settings-field">
+            <label>Chapter number</label>
+            <input asp-for="ChapterNumber"
+                   type="number"
+                   min="1"
+                   required />
+        </div>
+
+        <div class="settings-field">
+            <label>Volume (optional)</label>
+            <input asp-for="VolumeNumber"
+                   type="number"
+                   min="1" />
+        </div>
+
+        <div class="settings-field">
+            <label>Pages</label>
+            <input type="file"
+                   name="Pages"
+                   multiple
+                   accept="image/*"
+                   required />
+            <small>Pages will be ordered by filename</small>
+        </div>
+
+        <button type="submit" class="auth-submit-btn">
+            Upload chapter
+        </button>
+    </form>
+  
+</div>

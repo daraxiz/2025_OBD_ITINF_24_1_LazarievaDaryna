@@ -1,51 +1,74 @@
 ﻿using Microsoft.Data.SqlClient;
-using Mankura.Models;
 
 namespace Mankura.Data
 {
     public class ChapterRepository
     {
-        private readonly string _connectionString;
+        private readonly string _cs;
 
-        public ChapterRepository(IConfiguration config)
+        public ChapterRepository(IConfiguration cfg)
         {
-            _connectionString = config.GetConnectionString("DefaultConnection")!;
+            _cs = cfg.GetConnectionString("DefaultConnection")!;
         }
 
-        public List<ChapterPage> GetPages(int chapterId)
+        public int CreateChapter(int mangaId, int number)
         {
-            var pages = new List<ChapterPage>();
+            using var con = new SqlConnection(_cs);
+            con.Open();
 
-            using var conn = new SqlConnection(_connectionString);
-            conn.Open();
+            var cmd = new SqlCommand(@"
+                IF NOT EXISTS (
+                    SELECT 1 FROM Chapter 
+                    WHERE ID_Manga = @m AND ChapterNumber = @n
+                )
+                INSERT INTO Chapter (ID_Manga, ChapterNumber)
+                OUTPUT INSERTED.ID_Chapter
+                VALUES (@m,@n)
+                ELSE
+                SELECT ID_Chapter 
+                FROM Chapter 
+                WHERE ID_Manga = @m AND ChapterNumber = @n",
+                con);
 
-            var sql = @"
-                SELECT 
-                    ID_Page,
-                    ID_Chapter,
-                    PageNumber,
-                    ImageURL
-                FROM ChapterPage
-                WHERE ID_Chapter = @chapterId
-                ORDER BY PageNumber
-            ";
+            cmd.Parameters.AddWithValue("@m", mangaId);
+            cmd.Parameters.AddWithValue("@n", number);
 
-            using var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@chapterId", chapterId);
+            return (int)cmd.ExecuteScalar();
+        }
 
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                pages.Add(new ChapterPage
-                {
-                    Id = reader.GetInt32(0),
-                    ChapterId = reader.GetInt32(1),
-                    PageNumber = reader.GetInt32(2),
-                    ImageURL = reader.GetString(3)
-                });
-            }
+        public void AddPage(int chapterId, int page, string path)
+        {
+            using var con = new SqlConnection(_cs);
+            con.Open();
 
-            return pages;
+            var cmd = new SqlCommand(@"
+                INSERT INTO ChapterPage (ID_Chapter, PageNumber, ImageURL)
+                VALUES (@c,@p,@i)",
+                con);
+
+            cmd.Parameters.AddWithValue("@c", chapterId);
+            cmd.Parameters.AddWithValue("@p", page);
+            cmd.Parameters.AddWithValue("@i", path);
+
+            cmd.ExecuteNonQuery();
+        }
+
+        public void Delete(int chapterId, int mangaId)
+        {
+            using var con = new SqlConnection(_cs);
+            con.Open();
+
+            var cmd = new SqlCommand(@"
+                DELETE FROM ReadingProcess WHERE ID_Chapter = @c;
+                DELETE FROM ChapterPage   WHERE ID_Chapter = @c;
+                DELETE FROM Chapter       WHERE ID_Chapter = @c AND ID_Manga = @m;
+            ", con);
+
+            cmd.Parameters.AddWithValue("@c", chapterId);
+            cmd.Parameters.AddWithValue("@m", mangaId);
+
+            cmd.ExecuteNonQuery();
         }
     }
 }
+

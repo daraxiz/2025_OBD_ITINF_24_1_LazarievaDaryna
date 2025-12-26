@@ -105,7 +105,8 @@ namespace Mankura.Data
             var sql = @"
                 SELECT TOP 1 c2.ID_Chapter
                 FROM Chapter c1
-                JOIN Chapter c2 ON c2.ID_Manga = c1.ID_Manga
+                JOIN Chapter c2 
+                    ON c2.ID_Manga = c1.ID_Manga
                 WHERE c1.ID_Chapter = @chapterId
                   AND c2.ChapterNumber < c1.ChapterNumber
                 ORDER BY c2.ChapterNumber DESC
@@ -115,8 +116,9 @@ namespace Mankura.Data
             cmd.Parameters.AddWithValue("@chapterId", chapterId);
 
             var res = cmd.ExecuteScalar();
-            return res == null ? null : (int?)Convert.ToInt32(res);
+            return res == null ? null : (int)res;
         }
+
 
         public int? GetNextChapterId(int chapterId)
         {
@@ -126,7 +128,8 @@ namespace Mankura.Data
             var sql = @"
                 SELECT TOP 1 c2.ID_Chapter
                 FROM Chapter c1
-                JOIN Chapter c2 ON c2.ID_Manga = c1.ID_Manga
+                JOIN Chapter c2 
+                    ON c2.ID_Manga = c1.ID_Manga
                 WHERE c1.ID_Chapter = @chapterId
                   AND c2.ChapterNumber > c1.ChapterNumber
                 ORDER BY c2.ChapterNumber ASC
@@ -136,7 +139,56 @@ namespace Mankura.Data
             cmd.Parameters.AddWithValue("@chapterId", chapterId);
 
             var res = cmd.ExecuteScalar();
-            return res == null ? null : (int?)Convert.ToInt32(res);
+            return res == null ? null : (int)res;
+        }
+
+        public int? GetFirstChapterId(int mangaId)
+        {
+            using var conn = new SqlConnection(_cs);
+            conn.Open();
+
+            var sql = @"
+                SELECT TOP 1 ID_Chapter
+                FROM Chapter
+                WHERE ID_Manga = @mangaId
+                ORDER BY ChapterNumber ASC
+            ";
+
+            using var cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@mangaId", mangaId);
+
+            var res = cmd.ExecuteScalar();
+            return res == null ? null : (int)res;
+        }
+
+        public List<Chapter> GetChaptersByManga(int mangaId)
+        {
+            var list = new List<Chapter>();
+
+            using var con = new SqlConnection(_cs);
+            con.Open();
+
+            using var cmd = new SqlCommand(@"
+        SELECT ID_Chapter, ChapterNumber, VolumeNumber
+        FROM Chapter
+        WHERE ID_Manga = @m
+        ORDER BY ChapterNumber
+    ", con);
+
+            cmd.Parameters.AddWithValue("@m", mangaId);
+
+            using var r = cmd.ExecuteReader();
+            while (r.Read())
+            {
+                list.Add(new Chapter
+                {
+                    Id = (int)r["ID_Chapter"],
+                    ChapterNumber = (int)r["ChapterNumber"],
+                    VolumeNumber = r["VolumeNumber"] as int?
+                });
+            }
+
+            return list;
         }
     }
 }

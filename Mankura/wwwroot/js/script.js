@@ -1,27 +1,19 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
 
-    const filterTitles = document.querySelectorAll('.filter-group-title');
-
-    filterTitles.forEach(title => {
-        title.addEventListener('click', () => {
-            const filterGroup = title.closest('.filter-group');
-            if (filterGroup) {
-                filterGroup.classList.toggle('active');
-            }
+    document.querySelectorAll('.filter-group-title')
+        .forEach(title => {
+            title.addEventListener('click', () => {
+                title.closest('.filter-group')?.classList.toggle('active');
+            });
         });
-    });
 
     const resetButton = document.querySelector('.filter-buttons button:not(.apply)');
     const applyButton = document.querySelector('.filter-buttons .apply');
 
     if (resetButton) {
         resetButton.addEventListener('click', () => {
-            const sidebar = document.querySelector('.filter-sidebar');
-            if (sidebar) {
-                sidebar
-                    .querySelectorAll('input[type="checkbox"], input[type="radio"]')
-                    .forEach(input => input.checked = false);
-            }
+            document.querySelectorAll('.filter-sidebar input')
+                .forEach(i => i.checked = false);
         });
     }
 
@@ -31,38 +23,41 @@
         });
     }
 
-    const tabs = document.querySelectorAll('.tab');
-    const description = document.querySelector('.manga-description');
+    const tabs = document.querySelectorAll(".tab-btn");
+    const description = document.getElementById("tab-desc");
 
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
+    tabs.forEach(btn => {
+        btn.addEventListener("click", () => {
 
-            if (description) {
-                description.style.display =
-                    tab.textContent.trim() === 'Chapters' ? 'none' : 'block';
-            }
+            tabs.forEach(b => b.classList.remove("active"));
+            document.querySelectorAll(".tab-content")
+                .forEach(c => c.classList.remove("active"));
+
+            btn.classList.add("active");
+            document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
         });
     });
 
+
     const authForm = document.querySelector('.auth-form');
     if (authForm) {
-        authForm.addEventListener('submit', (e) => {
-            const passwordInput = authForm.querySelector('input[type="password"]');
-            if (passwordInput && passwordInput.value.length < 6) {
+        authForm.addEventListener('submit', e => {
+            const pw = authForm.querySelector('input[type="password"]');
+            if (pw && pw.value.length < 6) {
                 e.preventDefault();
                 alert('Password must be at least 6 characters long!');
             }
         });
     }
 
+
     const logoutBtn = document.getElementById('logoutBtn');
     const logoutModal = document.getElementById('logoutModal');
     const cancelLogout = document.getElementById('cancelLogout');
 
     if (logoutBtn && logoutModal) {
-        logoutBtn.addEventListener('click', () => {
+        logoutBtn.addEventListener('click', e => {
+            e.preventDefault();       
             logoutModal.style.display = 'flex';
         });
     }
@@ -73,34 +68,12 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const logoutBtn = document.getElementById('logoutBtn');
-
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                window.location.href = '/Account/Logout';
-            });
-        }
-    });
-
-});
-
-document.addEventListener('DOMContentLoaded', () => {
 
     const openBtn = document.getElementById('openSettings');
     const closeBtn = document.getElementById('closeSettings');
     const panel = document.getElementById('profileSettings');
 
-    if (openBtn && panel) {
-        openBtn.addEventListener('click', () => {
-            panel.classList.add('active');
-        });
-    }
-
-    if (closeBtn && panel) {
-        closeBtn.addEventListener('click', () => {
-            panel.classList.remove('active');
-        });
-    }
+    if (openBtn && panel) openBtn.addEventListener('click', () => panel.classList.add('active'));
+    if (closeBtn && panel) closeBtn.addEventListener('click', () => panel.classList.remove('active'));
 
 });

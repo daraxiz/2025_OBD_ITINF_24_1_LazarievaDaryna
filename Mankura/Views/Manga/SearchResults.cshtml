@@ -1,33 +1,39 @@
 ﻿@model List<Mankura.Models.Manga>
 
-<h1 class="section-title">Search results</h1>
+<div class="search-page">
+    <div class="search-container">
 
-@if (!Model.Any())
-{
-    <p class="empty-text">Nothing found</p>
-}
-else
-{
-    <div class="manga-grid">
-        @foreach (var manga in Model)
+        <h1 class="section-title">Search results</h1>
+
+        @if (!Model.Any())
         {
-            <a asp-controller="Manga"
-               asp-action="Details"
-               asp-route-id="@manga.Id"
-               class="manga-card">
-
-                <div class="manga-cover">
-                    @if (!string.IsNullOrEmpty(manga.Cover))
-                    {
-                        <img src="@manga.Cover" alt="@manga.Name" />
-                    }
-                </div>
-
-                <div class="manga-title">@manga.Name</div>
-                <div class="manga-subtitle">
-                    @(manga.ReleaseYear?.ToString() ?? "—")
-                </div>
-            </a>
+            <p class="empty-text">Nothing found</p>
         }
+        else
+        {
+            <div class="manga-grid">
+                @foreach (var manga in Model)
+                {
+                    <a asp-controller="Manga"
+                       asp-action="Details"
+                       asp-route-id="@manga.Id"
+                       class="manga-card">
+
+                        <div class="manga-cover">
+                            @if (!string.IsNullOrEmpty(manga.Cover))
+                            {
+                                <img src="@manga.Cover" alt="@manga.Name" />
+                            }
+                        </div>
+
+                        <div class="manga-title">@manga.Name</div>
+                        <div class="manga-subtitle">
+                            @(manga.ReleaseYear?.ToString() ?? "—")
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+
     </div>
-}
+</div>

@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
     font-family: 'Poppins';
     src: url('fonts/Poppins/Poppins-Regular.ttf') format('truetype');
     font-weight: 400;
@@ -32,12 +32,28 @@
     --shadow: 0 8px 12px 0 #EEF1F3;
 }
 
-body {
+html, body {
+    height: 100%;
+    margin: 0;
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
     letter-spacing: -0.02em;
     background-color: var(--background);
     color: var(--content-dark);
+}
+
+.page-wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content {
+    flex: 1;
+}
+
+main {
+    flex: 1;
 }
 
 h1, h2, h3, .section-title, .catalog-title, .filter-title, .manga-header-title {
@@ -210,6 +226,17 @@ main {
 .section-title {
     font-size: 32px;
     margin-bottom: 8px;
+}
+
+.search-page {
+    display: flex;
+    justify-content: center;
+}
+
+.search-container {
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px 20px 60px;
 }
 
 .manga-grid {
@@ -497,7 +524,7 @@ main {
 
 .profile-content {
     display: flex;
-    gap: 40px;
+    gap: 32px;
     align-items: flex-start;
 }
 
@@ -518,6 +545,7 @@ main {
 }
 
 .profile-manga-content {
+    min-width: 500px;
     flex: 1;
     background-color: var(--blocks);
     padding: 32px;
@@ -653,22 +681,46 @@ main {
     margin-bottom: 24px;
 }
 
-.tab {
-    padding: 12px 0;
-    cursor: pointer;
-    color: var(--content-medium);
-    transition: color 0.3s;
-    border-bottom: 2px solid transparent;
+.tabs {
+    display: flex;
+    gap: 12px;
+    margin: 14px 0 6px;
 }
 
-    .tab.active {
-        color: var(--content-dark);
-        border-bottom-width: 4px;
-        border-bottom-color: var(--accent);
-        border-bottom-left-radius: 4px;
-        border-bottom-right-radius: 4px;
-        margin-bottom: -2px;
-        font-weight: 600;
+.tab-btn {
+    padding: 9px 16px;
+    border-radius: 12px;
+    border: 1px solid #E2E6F3;
+    background: #ffffff;
+    cursor: pointer;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2B2F3B;
+    transition: .18s ease;
+}
+
+    .tab-btn:hover {
+        background: #f2f4ff;
+    }
+
+    .tab-btn.active {
+        background: #4D6FFF;
+        color: #ffffff;
+        border-color: #4D6FFF;
+    }
+
+.tab-content {
+    display: none;
+    margin-top: 10px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    color: #2B2F3B;
+}
+
+    .tab-content.active {
+        display: block;
     }
 
 .manga-tags {
@@ -700,7 +752,8 @@ main {
     padding: 16px;
     align-items: center;
     margin-top: 16px;
-    width: 600px;
+    margin-bottom: 16px;
+    width: 700px;
 }
 
     .comment-input-wrapper input {
@@ -955,75 +1008,73 @@ main {
 .logout-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.4);
-    display: none;
+    background: rgba(0,0,0,0.5); /* Чуть темнее для контраста */
+    display: none; /* Переключайте на flex через JS */
     align-items: center;
     justify-content: center;
-    z-index: 999;
+    z-index: 9999;
 }
 
 .logout-modal-content {
-    background: var(--blocks);
+    background: var(--blocks, #fff);
     padding: 24px;
     border-radius: 12px;
     width: 320px;
     text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
 .logout-modal-actions {
     display: flex;
     gap: 12px;
     margin-top: 24px;
+    width: 100%;
 }
 
-.logout-form {
-    flex: 1;
+    .logout-modal-actions form,
+    .logout-modal-actions .reset-btn {
+        flex: 1; 
+        display: block;
+        margin: 0;
+    }
+
+.logout-modal .apply,
+.logout-modal .reset-btn {
+    width: 100%; 
+    height: 44px;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-sizing: border-box;
 }
 
 .logout-modal .apply {
-    width: 100%;
-    height: 44px;
-    background-color: var(--accent);
+    background-color: var(--accent, #007bff);
     color: #FFFFFF;
     border: none;
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
     font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
-    transition: background-color 0.2s;
 }
 
     .logout-modal .apply:hover {
-        background-color: #2a61d8; 
+        background-color: #2a61d8;
     }
 
 .logout-modal .reset-btn {
-    flex: 1;
-    height: 44px;
     background-color: transparent;
-    border: 2px solid var(--content-light);
-    color: var(--content-dark);
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
+    border: 2px solid var(--content-light, #eee);
+    color: var(--content-dark, #333);
     font-weight: 500;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
 }
 
     .logout-modal .reset-btn:hover {
-        background-color: var(--background);
-        border-color: var(--content-medium);
+        background-color: #f8f9fa;
+        border-color: var(--content-medium, #ccc);
     }
-
-.logout-btn {
-    width: 100%;
-    height: 40px;
-    border-radius: 10px;
-    font-weight: 500;
-    cursor: pointer;
-}
 
 .confirm-btn,
 .cancel-btn {
@@ -1160,7 +1211,6 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
 }
 
 .manga-page-image-placeholder img {
@@ -1168,6 +1218,712 @@ main {
     height: auto;
     border-radius: 8px;
 }
+
+.comments-section {
+    margin-top: 48px;
+    max-width: 700px;
+}
+
+.comments-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.comment-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comment-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.comment-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.comment-username {
+    font-weight: 600;
+    font-size: 16px;
+    color: #1f2937;
+}
+
+.comment-date {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+.comment-text {
+    margin-top: 12px;
+    font-size: 18px;
+    line-height: 1.4;
+    color: #111827;
+}
+
+.comment-delete-form {
+    display: flex;
+}
+
+.comment-delete-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+    .comment-delete-btn img {
+        width: 16px;
+        height: 16px;
+        opacity: 0.5;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .comment-delete-btn:hover img {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+    .modal-overlay.hidden {
+        display: none;
+    }
+
+.modal {
+    background: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    width: 320px;
+    text-align: center;
+}
+
+.reading-options button {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.btn-cancel {
+    background: #e5e7eb;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-delete {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.text-danger {
+    color: #ef4444; 
+    font-size: 14px;
+    margin-top: 4px;
+    display: block;
+}
+
+.admin-wrapper {
+    position: relative;
+}
+
+.admin-btn img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+.admin-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.admin-panel {
+    position: absolute;
+    top: 42px;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--blocks);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 190px;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+}
+
+    .admin-panel a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--content-dark);
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+        .admin-panel a:hover {
+            background: var(--background);
+        }
+
+    .admin-panel img {
+        width: 18px;
+        height: 18px;
+    }
+
+    .admin-panel.open {
+        display: flex;
+    }
+
+.admin-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: none;
+    color: var(--content-dark);
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+    .admin-item img {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        opacity: 0.8;
+    }
+
+.admin-item-form {
+    display: inline-block;
+}
+
+.admin-item-btn {
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    color: inherit;
+}
+
+    .admin-item-btn:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .admin-item-btn:focus-visible {
+        outline: none;
+    }
+
+    .admin-item-btn img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .admin-item:hover {
+        background-color: var(--background);
+        transform: translateX(4px);
+    }
+
+        .admin-item:hover img {
+            opacity: 1;
+        }
+
+.admin-stats {
+    display: flex;
+    gap: 24px;
+    margin: 24px 0;
+}
+
+.admin-stat {
+    background: var(--blocks);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    flex: 1;
+}
+
+.admin-stat-title {
+    color: var(--content-medium);
+    font-size: 14px;
+}
+
+.admin-stat-value {
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.admin-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: none;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: var(--content-dark);
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+    .admin-item:hover {
+        background: var(--background);
+    }
+
+    .admin-item img {
+        width: 20px;
+        height: 20px;
+    }
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .admin-table th,
+    .admin-table td {
+        padding: 14px;
+        border-bottom: 1px solid var(--content-light);
+        text-align: left;
+    }
+
+.admin-delete-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.admin-badge {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.admin-role-btn {
+    background: var(--blocks);
+    border: 2px solid var(--content-light);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 8px;
+}
+
+    .admin-role-btn:hover {
+        background: var(--background);
+    }
+
+.admin-actions-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+    .admin-actions-cell button {
+        width: 140px;
+        height: 36px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+.admin-role-btn {
+    background: var(--blocks);
+    border: 2px solid var(--content-light);
+    color: var(--content-dark);
+}
+
+.admin-delete-btn {
+    background: #ef4444;
+    border: none;
+    color: #fff;
+}
+
+.admin-role-btn:hover {
+    background: var(--background);
+}
+
+.admin-delete-btn:hover {
+    background: #dc2626;
+}
+
+.admin-self {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--content-medium);
+    padding: 16px 16px;
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+}
+
+.admin-self {
+    color: var(--accent);
+}
+
+.manga-reader-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.manga-page img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.modal-close {
+    margin-top: 16px;
+    width: 100%;
+    height: 44px;
+    background-color: transparent;
+    border: 2px solid var(--content-light);
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--content-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .modal-close:active {
+        transform: scale(0.97);
+    }
+
+.reading-options {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+}
+
+    .reading-options button {
+        width: 100%;
+        height: 48px;
+        background-color: var(--blocks);
+        border: 2px solid var(--content-light);
+        border-radius: 12px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--content-dark);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+    }
+
+        .reading-options button:hover {
+            background-color: var(--background);
+            border-color: var(--accent);
+        }
+
+        .reading-options button:active {
+            transform: scale(0.97);
+        }
+
+        .reading-options button.active {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+
+.modal-actions {
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px;
+    margin-top: 24px;
+    width: 100%;
+}
+
+    .modal-actions button {
+        height: 44px;
+        border-radius: 10px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px; 
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .modal-close:hover {
+        background-color: var(--background);
+        border-color: var(--content-medium) !important;
+    }
+
+.modal-remove {
+    background-color: #fff1f1;
+    border: 2px solid #f3bcbc !important;
+    color: #e54848;
+    font-weight: 600;
+}
+
+    .modal-remove:hover {
+        background-color: #ffe5e5;
+    }
+
+.site-footer {
+    margin-top: 80px;
+    padding: 24px 0;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+}
+
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-logo {
+    font-weight: 700;
+    font-size: 16px;
+    color: #111827;
+}
+
+.footer-copy {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+    .footer-links a {
+        font-size: 14px;
+        color: #6b7280;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+        .footer-links a:hover {
+            color: #2563eb;
+        }
+
+.form-error {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background-color: #ffe6e6;
+    border: 1px solid #ff5c5c;
+    border-radius: 8px;
+    color: #b00000;
+    font-size: 14px;
+}
+
+    .form-error ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+.chapters-list {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.chapter-item {
+    padding: 12px 16px;
+    background-color: var(--blocks);
+    border-radius: 12px;
+    border: none;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s ease;
+    box-shadow: var(--shadow);
+    margin-bottom: 8px;
+}
+
+    .chapter-item:hover {
+        background: #eaeaea;
+    }
+
+.chapter-volume {
+    font-size: 12px;
+    color: #666;
+}
+
+.chapters-empty {
+    color: #888;
+    font-size: 14px;
+}
+
+.bookmark-lists {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bookmark-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+    .bookmark-item:hover {
+        background: #f3f4f6;
+    }
+
+    .bookmark-item input {
+        display: none;
+    }
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.bookmark-item input:checked + .checkmark {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+    .bookmark-item input:checked + .checkmark::after {
+        content: "✓";
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+.profile-manga-content {
+    min-width: 600px;
+}
+
+.chapter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid #eee;
+}
+
+.chapter-right {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+    .chapter-row:hover {
+        background: #f7f9ff;
+    }
+
+.chapter-link {
+    font-weight: 500;
+    color: var(--content-dark);
+    text-decoration: none;
+}
+
+.chapter-vol {
+    opacity: .6;
+    margin-left: 8px;
+}
+
+.chapter-delete-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 4px;
+    transition: 0.2s;
+}
+
+    .chapter-delete-btn img {
+        width: 18px;
+        opacity: .8;
+    }
+
+    .chapter-delete-btn:hover img {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+
 
 @media (max-width: 1200px) {
     .catalog-grid, .profile-manga-grid {

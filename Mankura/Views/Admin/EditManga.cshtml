@@ -1,0 +1,70 @@
+﻿@model Mankura.Models.ViewModels.EditMangaViewModel
+
+<div class="profile-manga-content">
+    <h2>Edit manga</h2>
+
+    <form asp-action="EditManga"
+          method="post"
+          enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Cover" />
+
+        <div class="settings-field">
+            <label>Publisher</label>
+            <input asp-for="PublisherName" />
+        </div>
+
+        <div class="settings-field">
+            <label>Name</label>
+            <input asp-for="NameManga" />
+        </div>
+
+        <div class="settings-field">
+            <label>Description</label>
+            <textarea asp-for="Description"></textarea>
+        </div>
+
+        <div class="settings-field">
+            <label>Current cover</label>
+            @if (!string.IsNullOrEmpty(Model.Cover))
+            {
+                <img src="@Model.Cover" style="max-width:150px" />
+            }
+        </div>
+
+        <div class="settings-field">
+            <label>Upload new cover</label>
+            <input asp-for="CoverFile" type="file" accept="image/*" />
+        </div>
+
+        <div class="settings-field">
+            <label>Status</label>
+            <select asp-for="StatusId" asp-items="Model.Statuses"></select>
+        </div>
+
+        <div class="settings-field">
+            <label>Type</label>
+            <select asp-for="TypeId" asp-items="Model.Types"></select>
+        </div>
+
+        <div class="settings-field">
+            <label>Release year</label>
+            <input asp-for="ReleaseYear" type="number" />
+        </div>
+
+        <div class="settings-field">
+            <label>Genres</label>
+            <select asp-for="SelectedGenres"
+                    asp-items="Model.Genres"
+                    multiple></select>
+        </div>
+
+        <button type="submit" class="auth-submit-btn">
+            Save changes
+        </button>
+
+    </form>
+</div>
+

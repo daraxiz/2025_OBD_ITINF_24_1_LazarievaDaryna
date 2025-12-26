@@ -1,7 +1,17 @@
-﻿@model ProfileViewModel
+﻿@using Mankura.Models.ViewModels
+@model ProfileViewModel
 
 @{
     ViewData["Title"] = "Profile";
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("profileSettings")?.classList.add("open");
+        });
+    </script>
 }
 
 <div class="profile-header">
@@ -13,7 +23,6 @@
         <div class="profile-details">
             <h1>@Model.UserName</h1>
             <p>Email: @Model.Email</p>
-            <p>User type: User</p>
         </div>
     </div>
 
@@ -22,40 +31,20 @@
             id="openSettings">
         Settings
     </button>
-    
-    <div class="profile-settings-panel" id="profileSettings">
-        <div class="settings-modal" id="settingsModal">
-            <div class="settings-content">
-                <h3>Profile settings</h3>
+</div>
 
-                <form method="post"
-                      asp-action="UpdateProfile"
-                      asp-controller="User"
-                      enctype="multipart/form-data">
+<div class="profile-settings-panel" id="profileSettings">
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <h3>Profile settings</h3>
 
-                    <div class="settings-field">
-                        <label>Username</label>
-                        <input type="text"
-                               name="UserName"
-                               value="@Model.UserName"
-                               required />
-                    </div>
-
-                    <div class="settings-field">
-                        <label>Avatar</label>
-                        <input type="file" name="Avatar" accept="image/*" />
-                    </div>
-
-                    <div class="settings-actions">
-                        <button type="submit" class="apply">Save</button>
-                        <button type="button"
-                                class="reset-btn"
-                                id="closeSettings">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
+            @await Html.PartialAsync(
+            "_ProfileSettings",
+                        new ProfileSettingsViewModel
+                        {
+                            UserName = Model.UserName
+                        }
+                        )
         </div>
     </div>
 </div>
@@ -65,17 +54,37 @@
     <div class="bookmarks-sidebar">
         <h3 class="bookmarks-title">Bookmarks lists</h3>
 
-        <div class="bookmark-item"><span>Read</span></div>
-        <div class="bookmark-item"><span>Readable</span></div>
-        <div class="bookmark-item"><span>Will be read</span></div>
-        <div class="bookmark-item"><span>Favorites</span></div>
+        <div class="bookmark-lists">
+
+            <label class="bookmark-item">
+                <span class="label-text">Read</span>
+                <input type="checkbox" value="Read">
+                <span class="checkmark"></span>
+            </label>
+
+            <label class="bookmark-item">
+                <span class="label-text">Readable</span>
+                <input type="checkbox" value="Readable">
+                <span class="checkmark"></span>
+            </label>
+
+            <label class="bookmark-item">
+                <span class="label-text">Will be read</span>
+                <input type="checkbox" value="Will be read">
+                <span class="checkmark"></span>
+            </label>
+
+            <label class="bookmark-item">
+                <span class="label-text">Favorites</span>
+                <input type="checkbox" value="Favorites">
+                <span class="checkmark"></span>
+            </label>
+
+        </div>
+
     </div>
 
     <div class="profile-manga-content">
-
-        <div class="search-bar profile-search">
-            <input type="text" placeholder="Search..." />
-        </div>
 
         @if (!Model.ReadingList.Any())
         {
@@ -99,7 +108,9 @@
                     <a asp-controller="Manga"
                        asp-action="Details"
                        asp-route-id="@manga.Id"
-                       class="manga-card">
+                       class="manga-card"
+                       data-reading="@manga.ReadingType"
+                       data-title="@manga.Name">
 
                         <div class="manga-cover">
                             <img src="@manga.Cover" alt="@manga.Name" />
@@ -111,6 +122,10 @@
                 }
             </div>
         }
-
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/profile-filter.js"></script>
+}

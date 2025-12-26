@@ -15,14 +15,27 @@
             }
         </div>
 
-        <button class="action-button read"
-                onclick="location.href='@Url.Action("Read", "Manga", new { id = Model.Id })'">
-            Read
+        @if (ViewBag.FirstChapterId != null)
+        {
+            <button class="action-button read"
+                    onclick="location.href='@Url.Action("Read", "Manga", new { mangaId = Model.Id })'">
+                Read
+            </button>
+        }
+        else
+        {
+            <button class="action-button read disabled" disabled>
+                No chapters
+            </button>
+        }
+
+        <button id="bookmarkBtn"
+                class="action-button bookmark"
+                data-manga-id="@Model.Id">
+            @(ViewBag.ReadingStatus ?? "Add to bookmarks")
         </button>
 
-        <button class="action-button bookmark">
-            Add to bookmarks
-        </button>
+
 
         <div class="manga-info-group">
             <div class="info-label">Release</div>
@@ -52,6 +65,26 @@
             </div>
         </div>
 
+        @if (Model.Authors != null && Model.Authors.Any())
+        {
+            <div class="manga-info-group">
+                <div class="info-label">Author</div>
+                <div class="info-value">
+                    @string.Join(", ", Model.Authors)
+                </div>
+            </div>
+        }
+
+        @if (Model.Artists != null && Model.Artists.Any())
+        {
+            <div class="manga-info-group">
+                <div class="info-label">Artist</div>
+                <div class="info-value">
+                    @string.Join(", ", Model.Artists)
+                </div>
+            </div>
+        }
+
     </div>
 
     <div class="manga-main">
@@ -70,26 +103,78 @@
             }
         </div>
 
-        <div class="manga-tabs">
-            <div class="tab active">Description</div>
-            <div class="tab">Chapters</div>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="desc">Description</button>
+            <button class="tab-btn" data-tab="chapters">Chapters</button>
         </div>
 
-        <div class="manga-description">
-            @Model.Description
+        <div class="tab-content active" id="tab-desc">
+            <p>@Model.Description</p>
         </div>
+
+        <div class="tab-content" id="tab-chapters">
+            @if (ViewBag.Chapters != null && ViewBag.Chapters.Count > 0)
+            {
+                @foreach (var ch in ViewBag.Chapters)
+                {
+                    <a class="chapter-item"
+                       href="@Url.Action("Read", "Manga", new { chapterId = ch.Id, mangaId = Model.Id })">
+
+                        <span class="chapter-title">
+                            Chapter @ch.ChapterNumber
+                        </span>
+
+                        <span class="chapter-right">
+                            @if (ch.VolumeNumber != null)
+                            {
+                                <span class="chapter-vol">
+                                    Vol. @ch.VolumeNumber
+                                </span>
+                            }
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <button class="chapter-delete-btn"
+                                        data-chapter-id="@ch.Id"
+                                        data-manga-id="@Model.Id"
+                                        title="Delete chapter">
+                                    <img src="/icons/trash.svg" />
+                                </button>
+                            }
+                        </span>
+
+                    </a>
+                }
+            }
+            else
+            {
+                <p class="empty-text">No chapters yet</p>
+            }
+        </div>
+
 
         <div class="comments-section">
-            <h2>Comments</h2>
+
+            <h2 class="comments-title">Comments</h2>
 
             @if (User.Identity.IsAuthenticated)
             {
-                <div class="comment-input-wrapper">
-                    <input type="text" placeholder="Your opinion...">
-                    <div class="comment-send-button">
-                        <img src="/icons/sendbutton.svg" alt="Send">
-                    </div>
-                </div>
+                <form asp-controller="Comment"
+                      asp-action="Add"
+                      method="post"
+                      class="comment-input-wrapper">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="mangaId" value="@Model.Id" />
+
+                    <input type="text"
+                           name="text"
+                           placeholder="Your opinion..."
+                           required />
+
+                    <button type="submit" class="comment-send-button">
+                        <img src="/icons/sendbutton.svg" />
+                    </button>
+                </form>
             }
             else
             {
@@ -98,7 +183,105 @@
                 </p>
             }
 
+            @foreach (var c in ViewBag.Comments)
+            {
+                <div class="comment-card">
+
+                    <div class="comment-header">
+                        <div class="comment-user">
+                            <img src="@(string.IsNullOrEmpty(c.Avatar)
+                                     ? Url.Content("~/img/Avatar.svg")
+                                     : c.Avatar)"
+                             class="comment-avatar" />
+                            <span class="comment-username">@c.UserName</span>
+                        </div>
+
+                        <div class="comment-right">
+                            <span class="comment-date">
+                                @c.CommentDate.ToString("dd.MM.yyyy HH:mm")
+                            </span>
+
+                        @if ( User.Identity!.IsAuthenticated &&
+                                                int.TryParse(
+                                                User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
+                                                out var currentUserId
+                                                ) &&
+                                                c.UserId == currentUserId
+                                                )
+                            {
+                                <button type="button"
+                                        class="comment-delete-btn"
+                                        data-comment-id="@c.Id"
+                                        data-manga-id="@Model.Id"
+                                        title="Delete comment">
+                                    <img src="/icons/trash.svg" />
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="comment-text">
+                        @c.Text
+                    </div>
+
+                </div>
+            }
+
         </div>
 
+        <div id="deleteConfirmModal" class="modal-overlay" style="display:none">
+            <div class="modal">
+                <h3>Delete comment?</h3>
+                <p>This action cannot be undone.</p>
+
+                <div class="modal-actions">
+                    <button id="confirmDelete" class="btn-delete">Delete</button>
+                    <button id="cancelDelete" class="btn-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="readingModal" class="modal-overlay hidden">
+            <div class="modal">
+                <h3>Add to reading list</h3>
+
+                <div class="reading-options">
+                    <button data-type="Will be read">Will be read</button>
+                    <button data-type="Readable">Readable</button>
+                    <button data-type="Read">Read</button>
+                    <button data-type="Favorites">Favorites</button>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="modal-remove" id="removeFromReading">
+                        Remove from list
+                    </button>
+
+                    <button class="modal-close">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="deleteChapterModal" class="modal-overlay" style="display:none">
+            <div class="modal">
+                <h3>Delete chapter?</h3>
+                <p>This action cannot be undone.</p>
+
+                <div class="modal-actions">
+                    <button id="confirmChapterDelete" class="btn-delete">Delete</button>
+                    <button id="cancelChapterDelete" class="btn-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+
+        </div>
     </div>
-</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+<script src="~/js/comment.js"></script>
+<script src="~/js/reading-modal.js"></script>
+<script src="~/js/script.js"></script>
+}

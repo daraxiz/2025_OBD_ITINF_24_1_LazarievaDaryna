@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Mankura.Models.Manga>
+
+<div class="profile-manga-content">
+    <h2 class="section-title">Select manga to edit</h2>
+
+    @foreach (var m in Model)
+    {
+        <a class="admin-item"
+           asp-controller="Admin"
+           asp-action="EditManga"
+           asp-route-id="@m.Id">
+
+            <img src="/icons/edit.svg" />
+            <span>@m.Name</span>
+        </a>
+    }
+</div>

@@ -6,23 +6,17 @@
 
         <div class="catalog-header">
             <h1 class="catalog-title">Catalog</h1>
-
-            <div class="sort-wrapper">
-                <select class="sort-dropdown">
-                    <option>Rating</option>
-                    <option>Date</option>
-                    <option>Name (A-Z)</option>
-                </select>
-            </div>
         </div>
 
         <div class="catalog-grid">
             @foreach (var manga in Model.Mangas)
             {
-                <a asp-controller="Manga"
+                <a class="manga-card"
+                   data-title="@manga.Name.ToLower()"
+                   data-date="@manga.ReleaseYear"
+                   asp-controller="Manga"
                    asp-action="Details"
-                   asp-route-id="@manga.Id"
-                   class="manga-card">
+                   asp-route-id="@manga.Id">
 
                     <div class="manga-cover">
                         @if (!string.IsNullOrEmpty(manga.Cover))
@@ -134,6 +128,8 @@
                 </div>
             </div>
 
+
+
             <div class="filter-buttons">
                 <a asp-action="Index" class="reset-btn">Reset</a>
                 <button type="submit" class="apply">Apply</button>
@@ -144,4 +140,6 @@
     </aside>
 
 </div>
-
+@section Scripts {
+    <script src="~/js/catalog-sort.js"></script>
+}

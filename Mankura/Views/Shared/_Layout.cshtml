@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-
+  <div class="page-wrapper">
     <header>
         <div class="header-content">
             <div class="logo">
@@ -23,26 +23,40 @@
             </nav>
 
             <div class="header-right">
-                <form method="get"
-                      asp-controller="Manga"
-                      asp-action="Search"
-                      class="search-bar">
-
-                    <input type="text"
-                           name="q"
-                           placeholder="Search..." />
-                </form>
+                    <div class="header-clock" id="clock"></div>
+                    <form method="get" 
+                        asp-controller="Manga" 
+                        asp-action="Search" class="search-bar">
+                        <input type="text" name="q" placeholder="Search...">
+                    </form>
 
                 <div id="auth-zone">
                     @if (User.Identity.IsAuthenticated)
                     {
                         <div class="auth-actions">
 
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="admin-wrapper" id="adminWrapper">
+                                    <a href="/Admin/Panel"
+                                       class="admin-btn"
+                                       aria-label="Admin panel">
+                                        <img src="/icons/admin.svg" alt="Admin">
+                                    </a>
+
+                                    <div class="admin-panel" id="adminPanel">
+                                        <a href="/Admin/Panel">Dashboard</a>
+                                        <a href="/Admin/AddManga">Add manga</a>
+                                        <a href="/Admin/Users">Manage users</a>
+                                    </div>
+                                </div>
+                            }
+
                             <a href="/User/Profile" class="user-avatar">
                                 <img src="@(
                                      User.FindFirst("Avatar")?.Value ?? "/img/Avatar.svg"
-                            )" alt="Avatar">
-                            </a>
+                        )" alt="Avatar">
+                        </a>
 
                             <button type="button"
                                     class="logout-btn"
@@ -53,7 +67,8 @@
                             </button>
 
                         </div>
-                    }
+                                        }
+
                     else
                     {
                         <a href="/Account/Login" class="icon-btn">
@@ -69,20 +84,20 @@
         @RenderBody()
     </main>
 
-    <script src="/js/script.js"></script>
-
-    @RenderSection("Scripts", required: false)
     <div class="logout-modal" id="logoutModal">
         <div class="logout-modal-content">
             <h3 style="margin-bottom: 12px;">Log Out</h3>
             <p>Are you sure you want to log out?</p>
 
             <div class="logout-modal-actions">
-                <form method="get" action="/Account/Logout" class="logout-form">
-                    <button type="submit" class="apply">
-                        Log Out
-                    </button>
-                </form>
+                    <form asp-controller="Account"
+                          asp-action="Logout"
+                          method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="apply">
+                            Log Out
+                        </button>
+                    </form>
 
                 <button type="button" class="reset-btn" id="cancelLogout">
                     Cancel
@@ -90,6 +105,41 @@
             </div>
         </div>
     </div>
+    <footer class="site-footer">
+    <div class="footer-inner">
+
+        <div class="footer-left">
+            <span class="footer-logo">Mankura</span>
+            <span class="footer-copy">© @DateTime.Now.Year</span>
+        </div>
+
+        <div class="footer-center">
+            <span>
+                For all inquiries:
+                <a href="mailto:lazarevadarina629@gmail.com">
+                    lazarevadarina629@gmail.com
+                </a>
+            </span>
+        </div>
+
+        <div class="footer-links">
+            <a href="/Catalog">Catalog</a>
+            <a href="/User/Profile">Profile</a>
+        </div>
+
+    </div>
+</footer>
+  </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="/js/script.js"></script>
+    <script src="/js/admin.js"></script>
+    <script src="/js/clock.js"></script>
+
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
 

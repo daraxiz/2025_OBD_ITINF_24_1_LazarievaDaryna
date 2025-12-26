@@ -1,0 +1,30 @@
+﻿@model Mankura.Models.ViewModels.ProfileSettingsViewModel
+
+<form method="post"
+      asp-action="UpdateProfile"
+      asp-controller="User"
+      enctype="multipart/form-data">
+
+    @Html.AntiForgeryToken()
+
+    <div class="settings-field">
+        <label asp-for="UserName"></label>
+
+        <input asp-for="UserName" />
+
+        <span asp-validation-for="UserName"
+              class="text-danger"></span>
+    </div>
+
+    <div class="settings-field">
+        <label asp-for="Avatar"></label>
+        <input asp-for="Avatar" type="file" />
+    </div>
+
+    <div class="settings-actions">
+        <button type="submit" class="apply">Save</button>
+        <button type="button" class="reset-btn" id="closeSettings">
+            Cancel
+        </button>
+    </div>
+</form>

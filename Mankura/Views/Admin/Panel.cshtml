@@ -1,38 +1,69 @@
-﻿@model List<(int Id, string Username, string Email, string Role)>
+﻿@{
+    ViewData["Title"] = "Admin panel";
+}
 
-<h2>Admin Panel</h2>
+<div class="profile-manga-content">
+    <h2 class="section-title">Admin dashboard</h2>
 
-<div style="margin:12px 0;">
-    <b>Users:</b> @ViewBag.UsersCount |
-    <b>Manga:</b> @ViewBag.MangaCount |
-    <b>Comments:</b> @ViewBag.CommentsCount
+    <div class="admin-stats">
+        <div class="admin-stat">
+            <span class="admin-stat-title">Users</span>
+            <span class="admin-stat-value">@ViewBag.UsersCount</span>
+        </div>
+
+        <div class="admin-stat">
+            <span class="admin-stat-title">Manga</span>
+            <span class="admin-stat-value">@ViewBag.MangaCount</span>
+        </div>
+
+        <div class="admin-stat">
+            <span class="admin-stat-title">Comments</span>
+            <span class="admin-stat-value">@ViewBag.CommentsCount</span>
+        </div>
+    </div>
+
+    <div class="admin-actions">
+
+        <a href="/Admin/AddManga" class="admin-item">
+            <img src="/icons/add.svg" />
+            <span>Add manga</span>
+        </a>
+
+        <a asp-controller="Admin"
+           asp-action="SelectMangaToEdit"
+           class="admin-item">
+            <img src="/icons/edit.svg" />
+            <span>Edit manga</span>
+        </a>
+
+        <a href="/Admin/AddChapter" class="admin-item">
+            <img src="/icons/upload.svg" />
+            <span>Add chapter</span>
+        </a>
+
+        <a href="/Admin/Users" class="admin-item">
+            <img src="/icons/users.svg" />
+            <span>Manage users</span>
+        </a>
+        <form asp-action="DeleteManga"
+              method="post"
+              onsubmit="return confirm('Delete manga permanently?')">
+
+            @Html.AntiForgeryToken()
+
+            <select name="id" required>
+                <option value="">Select manga</option>
+                @foreach (var m in ViewBag.Mangas)
+                {
+                    <option value="@m.Id">@m.Name</option>
+                }
+            </select>
+
+            <button class="admin-item">
+                <img src="/icons/trash.svg" />
+                <span>Delete manga</span>
+            </button>
+        </form>
+
+    </div>
 </div>
-
-<table border="1" cellpadding="6">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var u in Model)
-        {
-            <tr>
-                <td>@u.Id</td>
-                <td>@u.Username</td>
-                <td>@u.Email</td>
-                <td>@u.Role</td>
-                <td>
-                    <form method="post" action="/Admin/DeleteUser" style="display:inline;">
-                        <input type="hidden" name="id" value="@u.Id" />
-                        <button type="submit">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>

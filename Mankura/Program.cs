@@ -4,14 +4,15 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<Db>();
 builder.Services.AddControllersWithViews();
-
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<MangaRepository>();
 builder.Services.AddScoped<EmailService>();
-builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<ReaderRepository>();
-builder.Services.AddScoped<CloudinaryImportService>();
+builder.Services.AddScoped<CommentRepository>();
+builder.Services.AddScoped<ReadingProcessRepository>();
+builder.Services.AddScoped<ChapterRepository>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -19,6 +20,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Account/Login";
     });
+
+builder.Services.AddScoped<ChapterImportService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddSession();

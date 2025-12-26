@@ -134,7 +134,7 @@ namespace Mankura.Data
             };
         }
 
-        public void UpdateProfile(int userId, string userName, string? avatarPath)
+        public void UpdateProfile(int userId, string userName, string? avatar)
         {
             using var conn = new SqlConnection(_connectionString);
             conn.Open();
@@ -149,9 +149,64 @@ namespace Mankura.Data
             using var cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@id", userId);
             cmd.Parameters.AddWithValue("@userName", userName);
-            cmd.Parameters.AddWithValue("@avatar", (object?)avatarPath ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@avatar", (object?)avatar ?? DBNull.Value);
 
             cmd.ExecuteNonQuery();
+        }
+
+        public User? GetById(int userId)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            conn.Open();
+
+            var sql = @"
+                SELECT
+                    ID_User,
+                    Email,
+                    UserName,
+                    Password,
+                    RegistrationDate,
+                    ID_Role,
+                    Avatar
+                FROM [User]
+                WHERE ID_User = @id
+            ";
+
+            using var cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@id", userId);
+
+            using var r = cmd.ExecuteReader();
+            if (!r.Read()) return null;
+
+            return new User
+            {
+                Id = (int)r["ID_User"],
+                Email = (string)r["Email"],
+                UserName = (string)r["UserName"],
+                PasswordHash = (string)r["Password"],
+                RegistrationDate = (DateTime)r["RegistrationDate"],
+                RoleId = (int)r["ID_Role"],
+                Avatar = r["Avatar"] as string
+            };
+        }
+
+        public bool UserNameExists(string userName, int exceptUserId)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            conn.Open();
+
+            var sql = @"
+                SELECT COUNT(*)
+                FROM [User]
+                WHERE UserName = @userName
+                  AND ID_User <> @exceptUserId
+            ";
+
+            using var cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@userName", userName);
+            cmd.Parameters.AddWithValue("@exceptUserId", exceptUserId);
+
+            return (int)cmd.ExecuteScalar() > 0;
         }
 
     }

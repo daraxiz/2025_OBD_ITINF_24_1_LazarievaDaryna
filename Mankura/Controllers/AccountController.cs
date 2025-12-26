@@ -110,7 +110,7 @@ namespace Mankura.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.RoleId.ToString()),
+                new Claim(ClaimTypes.Role,user.RoleId == 1 ? "Admin" : "User"),
                 new Claim("Avatar", user.Avatar ?? "/img/Avatar.svg")
             };
 
@@ -128,7 +128,8 @@ namespace Mankura.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(
@@ -137,5 +138,6 @@ namespace Mankura.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
     }
 }

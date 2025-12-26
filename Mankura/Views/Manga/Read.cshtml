@@ -10,8 +10,8 @@
         @foreach (var page in Model.Pages.OrderBy(p => p.PageNumber))
         {
             <div class="manga-page">
-                <img src="@page.ImageURL"
-                     alt="Page @page.PageNumber"
+                <img src="@(page.ImageURL)"
+                     alt="Page @(page.PageNumber)"
                      loading="lazy" />
             </div>
         }
@@ -22,10 +22,10 @@
         @if (Model.PrevChapterId != null)
         {
             <a asp-controller="Manga"
-               asp-action="Read"
+               asp-action="ReadChapter"
                asp-route-chapterId="@Model.PrevChapterId"
                class="nav-button prev">
-                <img src="/icons/previous.svg" alt="Previous">
+                <img src="/icons/previous.svg" />
                 <span>Previous chapter</span>
             </a>
         }
@@ -33,11 +33,11 @@
         @if (Model.NextChapterId != null)
         {
             <a asp-controller="Manga"
-               asp-action="Read"
+               asp-action="ReadChapter"
                asp-route-chapterId="@Model.NextChapterId"
                class="nav-button next">
                 <span>Next chapter</span>
-                <img src="/icons/next.svg" alt="Next">
+                <img src="/icons/next.svg" />
             </a>
         }
 

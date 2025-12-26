@@ -13,5 +13,9 @@
         public string Type { get; set; }
         public string Publisher { get; set; }
         public List<string> Genres { get; set; } = new();
+        public List<string> Authors { get; set; } = new();
+        public List<string> Artists { get; set; } = new();
+        public string? ReadingType { get; set; } 
+
     }
 }
